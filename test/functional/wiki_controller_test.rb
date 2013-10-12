@@ -54,8 +54,6 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
     assert_difference 'Journal.count' do
       create_wiki_page with: 'refs #1 message'
     end
-    assert_equal Issue.find(1).journals.last.notes, 
-                 changeset_message('New_Page', 1, 'refs #1 message')
   end
 
   test 'Journalizing: with comment "refs #1 #2 message"' do
