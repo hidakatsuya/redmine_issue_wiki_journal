@@ -4,19 +4,24 @@ This plugin will provides the feature which associate Wiki updates to the Issue.
 
 ## Description
 
-TODO:
+TODO
 
   * Usage
-  * Screenshot
+  * Screenshots
+
+## Supported versions
+
+  * Redmine 2.3+
+  * Ruby 1.9+
 
 ## Install
 
-Please see the following page:
+Please see the following page:  
 http://www.redmine.org/projects/redmine/wiki/Plugins#Installing-a-plugin
 
 ## Uninstall
 
-Please see the following page:
+Please see the following page:  
 http://www.redmine.org/projects/redmine/wiki/Plugins#Uninstalling-a-plugin
 
 ## Contributing

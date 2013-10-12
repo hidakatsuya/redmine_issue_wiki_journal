@@ -9,14 +9,19 @@ TODO:
   * 使い方
   * 画面イメージ
 
+## 動作環境
+
+  * Redmine 2.3 以上
+  * Ruby 1.9 以上
+
 ## インストール
 
-以下のページをご覧下さい:
+以下のページをご覧下さい:  
 http://www.redmine.org/projects/redmine/wiki/Plugins#Installing-a-plugin
 
 ## アンインストール
 
-以下のページをご覧下さい:
+以下のページをご覧下さい:  
 http://www.redmine.org/projects/redmine/wiki/Plugins#Uninstalling-a-plugin
 
 ## 貢献する
@@ -46,5 +51,4 @@ Redmine のルートディレクトリで以下のコマンドを実行:
 ## Copyright
 
 Copyright &copy; Katsuya Hidaka. See MIT-LICENSE for further details.
-
 
