@@ -4,6 +4,8 @@ This plugin will provides the feature which associate Wiki updates to the Issue.
 
 ## Description
 
+Please see [wiki_controller_test.rb](https://github.com/hidakatsuya/redmine_issue_wiki_journal/blob/master/test/functional/wiki_controller_test.rb) for now.
+
 TODO
 
   * Usage

@@ -4,6 +4,8 @@
 
 ## 説明
 
+説明を書くまでは [wiki_controller_test.rb](https://github.com/hidakatsuya/redmine_issue_wiki_journal/blob/master/test/functional/wiki_controller_test.rb) を参考にして下さい。
+
 TODO:
 
   * 使い方
