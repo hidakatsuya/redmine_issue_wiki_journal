@@ -1,0 +1,4 @@
+ja:
+  issue_wiki_journal:
+    text_status_changed_by_wiki_changeset: "Wiki: [[%{page}]] のバージョン %{version} で適用されました"
+

@@ -1,0 +1,4 @@
+en:
+  issue_wiki_journal:
+    text_status_changed_by_wiki_changeset: "Wiki: Applied in changeset %{version} of [[%{page}]]."
+
