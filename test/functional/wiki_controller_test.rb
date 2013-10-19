@@ -147,5 +147,9 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
       path << "/diff?version_from=#{version - 1}" if version > 1
     end
   end
+
+  def link_to_issue(id)
+    %Q!<a href="/issues/##{id}" title="Open Issue ##{id}">##{id}</a>!
+  end
 end
 
