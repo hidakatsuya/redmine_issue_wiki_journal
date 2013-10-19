@@ -1,0 +1,5 @@
+<%# Render JavaScript only if current request is 'wiki/history'. -%>
+<% if controller_name == 'wiki' && action_name == 'history' -%>
+<%= javascript_include_tag :link_to_issue_in_comments, plugin: 'redmine_issue_wiki_journal' %>
+<% end -%>
+
