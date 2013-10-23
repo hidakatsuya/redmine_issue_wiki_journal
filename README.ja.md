@@ -2,14 +2,38 @@
 
 このプラグインは、Wiki ページの更新情報をチケットに関連付ける機能を提供します。
 
-## 説明
+## 使い方
 
-説明を書くまでは [wiki_controller_test.rb](https://github.com/hidakatsuya/redmine_issue_wiki_journal/blob/master/test/functional/wiki_controller_test.rb) を参考にして下さい。
+### 準備
 
-TODO:
+まず、`管理 > 設定 > リポジトリ` から終了キーワードに対応するステータスを設定して下さい。
+初期状態では、ステータスは設定されていません。このステータスが設定されていないと終了キーワードを使っても
+ステータスの更新は行われません。
 
-  * 使い方
-  * 画面イメージ
+[<img src="http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/setup.png" width="600">](http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/setup.png)
+
+### Wiki ページの更新をチケットに関連付ける
+
+下図のように、ページを更新するときのコメントにキーワードと関連付けたいチケットNo を含めます。
+
+[<img src="http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-1.png" width="600">](http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-1.png)
+
+利用できるキーワードは `管理 > 設定 > リポジトリ` の設定内容によって決まりますが、
+デフォルトでは ``refs``, ``references``, ``IssueID`` のようなキーワードが利用できます。
+
+更新すると、下図のように関連先のチケットにコメントが記録されます。
+
+[<img src="http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-2.png" width="600">](http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-2.png)
+
+### Wiki ページの更新をチケットに関連付けステータスを終了状態に更新する
+
+これも `管理 > 設定 > リポジトリ` の設定内容によって決まりますが、
+デフォルトでは終了キーワードとして ``fixes``, ``closes`` のようなキーワードが利用できます。
+使い方は関連付けるときと同様で、以下のようにコメントを記述します。
+
+    インストール手順を修正 fixes #1234
+
+これによって、関連先チケットにコメントが記録されると同時に終了状態へ更新されます。
 
 ## 動作環境
 
