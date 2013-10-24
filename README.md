@@ -14,7 +14,7 @@ TODO
 ## Supported versions
 
   * Redmine 2.2.x, 2.3.x
-  * Ruby 1.9+
+  * Ruby 1.9.3, 2.0.0
 
 ## Install
 
