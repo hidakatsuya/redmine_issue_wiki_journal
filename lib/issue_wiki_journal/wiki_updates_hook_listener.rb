@@ -12,7 +12,6 @@ module IssueWikiJournal
     private
 
     def page_content_changed?(new_page, old_page_version)
-      Rails.logger.error("new_page: #{new_page.content.version} / old: #{old_page_version}")
       new_page.content.version != old_page_version.to_i
     end
   end
