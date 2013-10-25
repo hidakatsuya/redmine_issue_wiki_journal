@@ -2,14 +2,24 @@
 
 This plugin will provides the feature which associate Wiki updates to the Issue.
 
-## Description
+## Usage
 
-Please see [wiki_controller_test.rb](https://github.com/hidakatsuya/redmine_issue_wiki_journal/blob/master/test/functional/wiki_controller_test.rb) for now.
+### Setup
+
+First, you move to `Administration > Settings > Repositories` page to set the status for fixed keyword.
+Status is not set in the initial state. Status update is not performed by the fixed keyword if this status is not set.
+
+[<img src="http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/setup.png" width="600">](http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/setup.png)
+
+### Associating Wiki page updates to Issue
+
+[<img src="http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-1.png" width="600">](http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-1.png)
 
 TODO
 
-  * Usage
-  * Screenshots
+[<img src="http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-2.png" width="600">](http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-2.png)
+
+TODO
 
 ## Supported versions
 
