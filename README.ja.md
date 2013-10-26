@@ -1,5 +1,7 @@
 # Redmine Issue Wiki Journal
 
+| [English](https://github.com/hidakatsuya/redmine_issue_wiki_journal/blob/master/README.md) | Japanese |
+
 このプラグインは、Wiki ページの更新情報をチケットに関連付ける機能を提供します。
 
 ## 使い方

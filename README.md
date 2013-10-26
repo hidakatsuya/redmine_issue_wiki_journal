@@ -1,5 +1,7 @@
 # Redmine Issue Wiki Journal
 
+| English | [Japanese](https://github.com/hidakatsuya/redmine_issue_wiki_journal/blob/master/README.ja.md) |
+
 This plugin will provides the feature which associate Wiki updates to the Issue.
 
 ## Usage
