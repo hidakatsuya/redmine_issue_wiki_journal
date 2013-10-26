@@ -44,7 +44,7 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
 
     [:en, :ja].each_with_index do |locale, i|
       ::I18n.locale = locale
-      update_wiki_page with: 'refs #1 message', version: i
+      update_wiki_page with: 'refs #1 message', as_version: i
       assert_equal journals.last.notes, changeset_message('New_Page', 1 + i, 'refs #1 message'), 
                    "Journal message test with #{locale} locale"
     end
@@ -125,7 +125,7 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
   private
 
   def update_wiki_page(args = {})
-    comment, version = args.values_at(:with, :version)
+    comment, version = args.values_at(:with, :as_version)
 
     put :update, project_id: 1, id: 'New Page', 
                  content: {comments: comment,
