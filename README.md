@@ -13,13 +13,20 @@ Status is not set in the initial state. Status update is not performed by the fi
 
 ### Associating Wiki page updates to Issue
 
+Please include the Keyword and the target IssueID in the comments.
+
 [<img src="http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-1.png" width="600">](http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-1.png)
 
-TODO
+Keyword that can be used depends on the setting (see `Administration > Settings > Repository` page) but keywords like `refs` `references` `IssueID` will available by default.
+After the update, comment would be recorded to the related Issue.
 
 [<img src="http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-2.png" width="600">](http://hidakatsuya.github.io/redmine_issue_wiki_journal/images/feature-2.png)
 
-TODO
+### Associating with updating status
+
+You can update status of the related Issue using keywords like `fixes` `closes`.
+
+    Modified the installation instructions fixes #123
 
 ## Supported versions
 
