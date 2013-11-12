@@ -131,7 +131,7 @@ module IssueWikiJournal
                         version: version, only_path: true
       end
       @message ||= l('issue_wiki_journal.text_status_changed_by_wiki_changeset', 
-                     page: @page.title, 
+                     page: "#{@project.identifier}:#{@page.title}", 
                      version: %Q!"#{version}":#{version_path}!) + ":\n\n" +
                    "bq. #{comments}"
     end

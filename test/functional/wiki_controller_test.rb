@@ -34,8 +34,12 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
   def setup
     @controller = ::WikiController.new
     @request.session[:user_id] = 2
+    @project = Project.find(1)
 
+    # Set to 1 status to be applied by the fixing keywords
     Setting.commit_fix_status_id = 5
+    # Allow issues of all the other projects to be referenced and fixed
+    Setting.commit_cross_project_ref = 1
   end
 
 
@@ -45,7 +49,8 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
     [:en, :ja].each_with_index do |locale, i|
       ::I18n.locale = locale
       update_wiki_page with: 'refs #1 message', as_version: i
-      assert_equal journals.last.notes, changeset_message('New_Page', 1 + i, 'refs #1 message'), 
+      assert_equal journals.last.notes, 
+                   changeset_message('New_Page', 'refs #1 message', version: i + 1), 
                    "Journal message test with #{locale} locale"
     end
   end
@@ -83,6 +88,22 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
     end
   end
 
+  test 'Journalizing: when commit_cross_project_ref setting is OFF' do
+    Setting.commit_cross_project_ref = 0
+
+    assert_no_difference 'Journal.count' do
+      create_wiki_page with: 'refs #1 message', in_project: Project.find(2)
+    end
+  end
+
+  test 'Journalizing: when commit_cross_project_ref setting is ON' do
+    Setting.commit_cross_project_ref = 1
+
+    assert_difference 'Journal.count' do
+      create_wiki_page with: 'refs #1 message', in_project: Project.find(2)
+    end
+  end
+
   test 'Status changes: with comment "fixes #1 message"' do
     create_wiki_page with: 'fixes #1 message'
     assert Issue.find(1).closed?
@@ -114,29 +135,31 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
     end
 
     assert_equal Issue.find(1).journals.last.notes, 
-                 changeset_message('New_Page', 1, 'fixes #1, refs #2 message')
+                 changeset_message('New_Page', 'fixes #1, refs #2 message')
     assert Issue.find(1).closed?
 
     assert_equal Issue.find(2).journals.last.notes, 
-                 changeset_message('New_Page', 1, 'fixes #1, refs #2 message')
+                 changeset_message('New_Page', 'fixes #1, refs #2 message')
     refute Issue.find(2).closed?
   end
 
   private
 
   def update_wiki_page(args = {})
-    comment, version = args.values_at(:with, :as_version)
+    comment, version, project = args.values_at(:with, :as_version, :in_project)
 
-    put :update, project_id: 1, id: 'New Page', 
+    put :update, project_id: project || @project.id, id: 'New Page', 
                  content: {comments: comment,
                            text: "h1. New Page\n\n Version #{version || 0}", 
                            version: version || 0}
   end
   alias_method :create_wiki_page, :update_wiki_page
 
-  def changeset_message(page, version, message)
+  def changeset_message(page, message, options = {})
+    version, project = {project: @project, version: 1}.merge(options).values_at(:version, :project)
+
     ::I18n.t('issue_wiki_journal.text_status_changed_by_wiki_changeset', 
-             page: page, 
+             page: "#{project.identifier}:#{page}", 
              version: %Q!"#{version}":#{version_path(page, version)}!) + 
              ":\n\nbq. #{message}"
   end
