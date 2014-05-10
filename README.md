@@ -37,7 +37,12 @@ You can update status of the related Issue using keywords like `fixes` `closes`.
 
 ## Install
 
-Please see the following page:  
+Clone this plugin to `your.Redmine/plugins`.
+
+    git clone https://github.com/hidakatsuya/redmine_issue_wiki_journal.git
+
+Or, download ZIP/TAR.gz archives from [here](https://github.com/hidakatsuya/redmine_issue_wiki_journal/releases/tag/0.0.1).
+Then, refer the following page to setup.
 http://www.redmine.org/projects/redmine/wiki/Plugins#Installing-a-plugin
 
 ## Uninstall

@@ -48,7 +48,11 @@
 
 ## インストール
 
-以下のページをご覧下さい:  
+まず、 `your.Redmine/plugins` に `git clone` して下さい。
+
+    git clone https://github.com/hidakatsuya/redmine_issue_wiki_journal.git
+
+または、 [こちら](https://github.com/hidakatsuya/redmine_issue_wiki_journal/releases/tag/0.0.1) から ZIP/TAR.GZ アーカイブをダウンロードして下さい。その後、以下のページを参考にセットアップすれば完了です。
 http://www.redmine.org/projects/redmine/wiki/Plugins#Installing-a-plugin
 
 ## アンインストール
