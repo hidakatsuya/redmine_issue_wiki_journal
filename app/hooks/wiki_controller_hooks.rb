@@ -1,7 +1,7 @@
 module IssueWikiJournal
-  class WikiUpdatesHookListener < Redmine::Hook::ViewListener
+  class WikiControllerHooks < Redmine::Hook::ViewListener
     def controller_wiki_edit_after_save(args = {})
-      page, params = args.values_at(:page, :params) 
+      page, params = args.values_at :page, :params
 
       if page_content_changed?(page, params[:content][:version])
         changeset = WikiChangeset.new(page)

@@ -31,119 +31,138 @@ class IssueWikiJournal::WikiControllerTest < ActionController::TestCase
            :wiki_contents,
            :wiki_content_versions
 
-  def setup
+  setup do
     @controller = ::WikiController.new
     @request.session[:user_id] = 2
     @project = Project.find(1)
-
-    # Set to 1 status to be applied by the fixing keywords
-    Setting.commit_fix_status_id = 5
-    # Allow issues of all the other projects to be referenced and fixed
-    Setting.commit_cross_project_ref = 1
   end
 
-
-  test 'Journal message' do
-    journals = Issue.find(1).journals
-
-    [:en, :ja].each_with_index do |locale, i|
-      ::I18n.locale = locale
-      update_wiki_page with: 'refs #1 message', as_version: i
-      assert_equal journals.last.notes, 
-                   changeset_message('New_Page', 'refs #1 message', version: i + 1), 
-                   "Journal message test with #{locale} locale"
+  context 'Referencing issues:' do
+    should 'add journal to Issue#1' do
+      assert_difference 'Journal.count' do
+        create_wiki_page with: 'refs #1 message'
+      end
     end
-  end
- 
-  test 'Journalizing: with comment "refs #1 message"' do
-    assert_difference 'Journal.count' do
-      create_wiki_page with: 'refs #1 message'
+
+    should 'add journal to Issue#1 and Issue#2' do 
+      assert_difference 'Journal.count', +2 do
+        create_wiki_page with: 'refs #1 #2 message'
+      end 
     end
-  end
 
-  test 'Journalizing: with comment "refs #1 #2 message"' do
-    assert_difference 'Journal.count', +2 do
-      create_wiki_page with: 'refs #1 #2 message'
+    should 'not add journal when no wiki updates' do
+      create_wiki_page
+
+      assert_no_difference 'Journal.count' do
+        # No content changes
+        update_wiki_page with: 'refs #1 message'
+      end
     end
-  end
 
-  test 'Journalizing: with comment "fixes #1 message"' do
-    assert_difference 'Journal.count' do
-      create_wiki_page with: 'fixes #1 message'
+    should 'translate message of journal' do
+      journals = Issue.find(1).journals
+
+      [:en, :ja].each_with_index do |locale, i|
+        ::I18n.locale = locale
+        update_wiki_page with: 'refs #1 message', as_version: i
+        assert_equal journals.last.notes, 
+                     changeset_message('New_Page', 'refs #1 message', version: i + 1), 
+                     "Journal message test with #{locale} locale"
+      end
     end
-  end
 
-  test 'Journalizing: without fix_status_id setting' do
-    Setting.commit_fix_status_id = 0
-    assert_difference 'Journal.count' do
-      create_wiki_page with: 'refs #1 message'
+    context 'when commit_cross_project_ref setting is enabled' do
+      setup do
+        Setting.commit_cross_project_ref = 1
+      end
+
+      should 'add journal to issue of other project' do
+        assert_difference 'Journal.count' do
+          create_wiki_page with: 'refs #1 message', in_project: Project.find(2)
+        end
+      end
     end
-  end
 
-  test 'Journalizing: no content updates' do
-    create_wiki_page
-    assert_no_difference 'Journal.count' do
-      # No content changes
-      update_wiki_page with: 'refs #1 message'
-    end
-  end
+    context 'when commit_cross_project_ref setting is disabled' do
+      setup do
+        Setting.commit_cross_project_ref = 0
+      end
 
-  test 'Journalizing: when commit_cross_project_ref setting is OFF' do
-    Setting.commit_cross_project_ref = 0
-
-    assert_no_difference 'Journal.count' do
-      create_wiki_page with: 'refs #1 message', in_project: Project.find(2)
-    end
-  end
-
-  test 'Journalizing: when commit_cross_project_ref setting is ON' do
-    Setting.commit_cross_project_ref = 1
-
-    assert_difference 'Journal.count' do
-      create_wiki_page with: 'refs #1 message', in_project: Project.find(2)
+      should 'not add journal to issue of other project' do
+        assert_no_difference 'Journal.count' do
+          create_wiki_page with: 'refs #1 message', in_project: Project.find(2)
+        end
+      end
     end
   end
 
-  test 'Status changes: with comment "fixes #1 message"' do
-    create_wiki_page with: 'fixes #1 message'
-    assert Issue.find(1).closed?
-  end
+  context 'Fixing issues:' do
+    context 'when fix_status_id setting is set' do
+      setup do
+        set_fix_status_id_setting_to 5
+      end
 
-  test 'Status changes: with comment "fixes #1 #2 message"' do
-    create_wiki_page with: 'fixes #1 #2 message'
-    assert Issue.where(id: [1, 2]).all?(&:closed?)
-  end
+      should 'add journals to issue' do
+        assert_difference 'Journal.count', +2 do
+          create_wiki_page with: 'fixes #1 #2 message'
+        end
+      end
 
-  test 'Status changes: without fix_status_id setting' do
-    Setting.commit_fix_status_id = 0
-    assert_no_difference 'Journal.count' do
-      create_wiki_page with: 'fixes #1 message'
-    end
-    refute Issue.find(1).closed?
-  end
-
-  test 'Status changes: no content updates' do
-    create_wiki_page
-    # No content changes
-    update_wiki_page with: 'fixes #1 message'
-    refute Issue.find(1).closed?
-  end
-
-  test 'Composite comment: such as "fixes #1, refs #2 message"' do
-    assert_difference 'Journal.count', +2 do
-      create_wiki_page with: 'fixes #1, refs #2 message'              
+      should 'update status of issue' do
+        create_wiki_page with: 'fixes #1 message'
+        assert Issue.find(1).closed?
+      end
     end
 
-    assert_equal Issue.find(1).journals.last.notes, 
-                 changeset_message('New_Page', 'fixes #1, refs #2 message')
-    assert Issue.find(1).closed?
+    context 'when fix_status_id setting is not set' do
+      setup do
+        set_fix_status_id_setting_to 0
+      end
 
-    assert_equal Issue.find(2).journals.last.notes, 
-                 changeset_message('New_Page', 'fixes #1, refs #2 message')
-    refute Issue.find(2).closed?
+      should 'not associate to issue' do
+        assert_no_difference 'Journal.count' do
+          create_wiki_page with: 'fixes #1 message'
+        end
+        # No status updates
+        assert_equal Issue.find(1).status_id, 1
+      end
+    end
+  end
+
+  context 'Combination:' do 
+    setup do
+      set_fix_status_id_setting_to 5
+      @comment = 'fixes #1, refs #2 message'
+    end
+
+    should 'add journals' do
+      assert_difference 'Journal.count', +2 do
+        create_wiki_page with: @comment
+      end
+
+      assert_equal Issue.find(1).journals.last.notes,
+                   changeset_message('New_Page', 'fixes #1, refs #2 message')
+      assert_equal Issue.find(2).journals.last.notes,
+                   changeset_message('New_Page', 'fixes #1, refs #2 message')
+    end
+
+    should 'update status' do
+      create_wiki_page with: @comment
+      assert Issue.find(1).closed?
+    end
   end
 
   private
+
+  def set_fix_status_id_setting_to(status_id)
+    if Redmine::VERSION.to_s < '2.4'
+      Setting.commit_fix_status_id = status_id
+    # Redmine 2.4 or higher
+    else
+      keywords = status_id.zero? ? [] : [{ 'keywords' => 'fixes', 'status_id' => status_id.to_s }]
+      Setting.commit_update_keywords = keywords
+    end
+  end
 
   def update_wiki_page(args = {})
     comment, version, project = args.values_at(:with, :as_version, :in_project)

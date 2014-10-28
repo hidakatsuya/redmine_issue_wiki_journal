@@ -1,5 +1,3 @@
-# coding: utf-8
-
 module IssueWikiJournal
   class WikiChangeset
     include Redmine::I18n
@@ -22,17 +20,22 @@ module IssueWikiJournal
 
     attr_reader :comments, :user, :project
 
+    def fix_keywords
+      @fix_keywords ||= if ::Redmine::VERSION.to_s < '2.4'
+        Setting.commit_fix_keywords.downcase.split(",").collect(&:strip)
+      else
+        Setting.commit_update_keywords_array.map {|r| r['keywords']}.flatten.compact
+      end
+    end
+
     # same as Changeset#scan_comment_for_issue_ids
     def scan_comment_for_issue_ids
       return if comments.blank?
 
       ref_keywords = Setting.commit_ref_keywords.downcase.split(",").collect(&:strip)
       ref_keywords_any = ref_keywords.delete('*')
-      fix_keywords = Setting.commit_fix_keywords.downcase.split(",").collect(&:strip)
 
       kw_regexp = (ref_keywords + fix_keywords).collect{|kw| Regexp.escape(kw)}.join("|")
-
-      referenced_issues = []
 
       comments.scan(/([\s\(\[,-]|^)((#{kw_regexp})[\s:]+)?(#\d+(\s+@#{TIMELOG_RE})?([\s,;&]+#\d+(\s+@#{TIMELOG_RE})?)*)(?=[[:punct:]]|\s|<|$)/i) do |match|
         action, refs = match[2], match[3]
@@ -41,8 +44,7 @@ module IssueWikiJournal
         refs.scan(/#(\d+)(\s+@#{TIMELOG_RE})?/).each do |m|
           issue, hours = find_referenced_issue_by_id(m[0].to_i), m[2]
           if issue
-            referenced_issues << issue
-            relate_to_issue(issue, fix_keywords.include?(action.to_s.downcase))
+            fix_issue(issue, action)
             log_time(issue, hours) if hours && Setting.commit_logtime_enabled?
           end
         end
@@ -66,25 +68,36 @@ module IssueWikiJournal
       issue
     end
 
-    # based on Changeset#fix_issue, and 
-    def relate_to_issue(issue, fix = false)
-      if fix
-        status = IssueStatus.find_by_id(Setting.commit_fix_status_id.to_i)
-        if status.nil?
-          logger.warn("No status matches commit_fix_status_id setting (#{Setting.commit_fix_status_id})") if logger
-          return issue
-        end
-
-        # the issue may have been updated by the closure of another one (eg. duplicate)
+    def fix_issue(issue, action)
+      if fix_keywords.include?(action)
         issue.reload
-        issue.status = status unless issue.status.is_closed?
 
-        unless Setting.commit_fix_done_ratio.blank?
-          issue.done_ratio = Setting.commit_fix_done_ratio.to_i
+        # less than 2.4
+        if Redmine::VERSION.to_s < '2.4'
+          status = IssueStatus.find_by_id(Setting.commit_fix_status_id.to_i)
+          if status.nil?
+            logger.warn("No status matches commit_fix_status_id setting (#{Setting.commit_fix_status_id})") if logger
+            return issue
+          end
+
+          issue.status = status unless issue.status.is_closed?
+
+          unless Setting.commit_fix_done_ratio.blank?
+            issue.done_ratio = Setting.commit_fix_done_ratio.to_i
+          end
+        # greater than 2.4 or equal
+        else
+          rule = Setting.commit_update_keywords_array.detect do |rule|
+            rule['keywords'].include?(action) &&
+              (rule['if_tracker_id'].blank? || rule['if_tracker_id'] == issue.tracker_id.to_s)
+          end
+          if rule
+            issue.assign_attributes rule.slice(*Issue.attribute_names)
+          end
         end
       end
 
-      issue.init_journal(user || User.anonymous, message(fix))
+      issue.init_journal(user || User.anonymous, message)
 
       unless issue.save
         logger.warn("Issue ##{issue.id} could not be saved by changeset: #{issue.errors.full_messages}") if logger
