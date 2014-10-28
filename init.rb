@@ -1,7 +1,7 @@
 require 'redmine'
 
 Redmine::Plugin.register :redmine_issue_wiki_journal do
-  name 'Redmine Issue Wiki Journal Plugin'
+  name 'Redmine Issue Wiki Journal'
   author 'Katsuya Hidaka'
   description 'This plugin will provides the feature which associate Wiki updates to the Issue'
   version '1.0.0'
