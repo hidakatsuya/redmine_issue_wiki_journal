@@ -1,8 +1,8 @@
 # Redmine Issue Wiki Journal
 
-| English | [Japanese](https://github.com/hidakatsuya/redmine_issue_wiki_journal/blob/master/README.ja.md) |
+[![Build Status](http://img.shields.io/travis/hidakatsuya/redmine_issue_wiki_journal.svg?style=flat)](https://travis-ci.org/hidakatsuya/redmine_issue_wiki_journal)
 
-This plugin will provides the feature which associate Wiki updates to the Issue.
+Redmine plugin for referencing and fixing issues in comment of wiki updates.
 
 ## Usage
 
@@ -32,8 +32,8 @@ You can update status of the related Issue using keywords like `fixes` `closes`.
 
 ## Supported versions
 
-  * Redmine 2.2.x, 2.3.x
-  * Ruby 1.9.3, 2.0.0
+  * Redmine 2.3, 2.4, 2.5, 2.6
+  * Ruby 1.9.3, 2.1.3
 
 ## Install
 
@@ -41,7 +41,7 @@ Clone this plugin to `your.Redmine/plugins`.
 
     git clone https://github.com/hidakatsuya/redmine_issue_wiki_journal.git
 
-Or, download ZIP/TAR.gz archives from [here](https://github.com/hidakatsuya/redmine_issue_wiki_journal/releases/tag/0.0.1).
+Or, download ZIP/TAR.gz archives from [here](https://github.com/hidakatsuya/redmine_issue_wiki_journal/releases).
 Then, refer the following page to setup.
 http://www.redmine.org/projects/redmine/wiki/Plugins#Installing-a-plugin
 
@@ -60,15 +60,11 @@ http://www.redmine.org/projects/redmine/wiki/Plugins#Uninstalling-a-plugin
   4. Push to the branch (``git push origin new-feature``)
   5. Create new Pull Request
 
-### How to setup plugin development envirnoment
-
-TODO
-
 ### How to test
 
 Run the following command in Redmine root directory:
 
-    $ rake redmine:plugins:test NAME=redmine_issue_wiki_journal
+    $ bundle exec rake redmine:plugins:test NAME=redmine_issue_wiki_journal
 
 ### Report Bugs
 
@@ -76,5 +72,4 @@ Run the following command in Redmine root directory:
 
 ## Copyright
 
-Copyright &copy; Katsuya Hidaka. See MIT-LICENSE for further details.
-
+&copy; Katsuya Hidaka. See MIT-LICENSE for further details.

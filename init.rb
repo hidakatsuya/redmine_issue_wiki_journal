@@ -3,7 +3,7 @@ require 'redmine'
 Redmine::Plugin.register :redmine_issue_wiki_journal do
   name 'Redmine Issue Wiki Journal'
   author 'Katsuya Hidaka'
-  description 'This plugin will provides the feature which associate Wiki updates to the Issue'
+  description 'Redmine plugin for referencing and fixing issues in comment of wiki updates.' 
   version '1.0.0'
   url 'https://github.com/hidakatsuya/redmine_issue_wiki_journal'
   author_url 'https://github.com/hidakatsuya'
