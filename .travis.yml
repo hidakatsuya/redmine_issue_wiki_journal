@@ -10,9 +10,6 @@ env:
   - REDMINE_REPOS=branches/2.4-stable
   - REDMINE_REPOS=branches/2.3-stable
 
-gemfile:
-  - $REDMINE_PATH/Gemfile
-
 before_install:
   - export PLUGIN_NAME=redmine_issue_wiki_journal
   - export DB=sqlite
