@@ -1,5 +1,17 @@
-<%# Render JavaScript only if current request is 'wiki/history'. -%>
 <% if controller_name == 'wiki' && action_name == 'history' -%>
-<%= javascript_include_tag :link_to_issue_in_comments, plugin: 'redmine_issue_wiki_journal' %>
+<script>
+  (function() {
+    var issuePath = '<%=j issue_path(999) %>'.replace(/999$/, '');
+    var re = /#(\d+)/;
+    var comment;
+
+    $('.wiki-page-version .comments').each(function() {
+      comment = $(this).text();
+      if (re.test(comment)) {
+        $(this).html(comment.replace(re, '<a href="' + issuePath + '$1" title="Open Issue #$1">#$1</a>'));
+      }
+    });
+  })();
+</script>
 <% end -%>
 
